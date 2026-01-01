@@ -25,13 +25,13 @@ function Toolbar({ onAddPerson, exportButtonsSlot }) {
 
         <div className="h-6 w-px bg-gray-300"></div>
 
-        {exportButtonsSlot}
-
-        <div className="h-6 w-px bg-gray-300"></div>
-
         <div className="text-sm text-gray-600">
           <span className="font-medium">Astuce :</span> Créez des liens en connectant les nœuds
         </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        {exportButtonsSlot}
       </div>
     </div>
   );
