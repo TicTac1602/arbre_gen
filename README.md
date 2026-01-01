@@ -1,20 +1,46 @@
-# React + Vite
+# Arbre Généalogique
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application web interactive pour créer et gérer des arbres généalogiques avec React Flow.
 
-Currently, two official plugins are available:
+## Fonctionnalités
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Gestion de projets** : Créer, éditer et supprimer plusieurs projets d'arbres généalogiques
+- **Arbre interactif** : Interface drag-and-drop avec React Flow
+- **Fiches détaillées** : Informations complètes pour chaque personne (dates, profession, propriétés)
+- **Index de décès** : Numérotation automatique des personnes décédées par ordre chronologique
+- **Relations visuelles** : Liens de mariage (or/💍) et de filiation (bleu) clairement différenciés
+- **Export** : Génération d'images PNG et PDF haute qualité
+- **Minimap** : Navigation facilitée avec carte miniature cliquable
+- **Persistence** : Sauvegarde automatique dans IndexedDB
 
-## React Compiler
+## Technologies
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19.2** avec Vite
+- **@xyflow/react** pour les diagrammes interactifs
+- **Zustand** pour la gestion d'état
+- **Dexie** pour IndexedDB
+- **Tailwind CSS** pour le style
+- **html-to-image** & **jsPDF** pour l'export
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+\`\`\`bash
+npm install
+\`\`\`
 
-TODO lors de l'ajout d'une node la placer au centre de l'espace de travail visible
+## Développement
 
-TODO Calculer l'age en fonction de la date de naissance jusque la date actuelle si pas de date de décès. Et retirer le champs "Âge" du formulaire mais conserver l'info dans la bdd
+\`\`\`bash
+npm run dev
+\`\`\`
+
+## Build
+
+\`\`\`bash
+npm run build
+\`\`\`
+
+## TODOs
+
+- Calculer l'âge automatiquement en fonction des dates
+- Placer les nouvelles nodes au centre de la vue

@@ -48,7 +48,7 @@ const calculateDeathIndices = (nodes) => {
       };
     }
     // Retirer deathIndex si la personne n'est plus décédée
-    const { deathIndex, ...dataWithoutIndex } = node.data || {};
+    const { deathIndex: _deathIndex, ...dataWithoutIndex } = node.data || {};
     return {
       ...node,
       data: dataWithoutIndex
@@ -107,7 +107,6 @@ const styleEdges = (edges, nodes) => {
   });
 };
 
-// Note: Les setState dans useEffect sont intentionnels pour synchroniser avec le store
 function MainContent() {
   const { currentProject, updateCurrentProject } = useProjectStore();
   const [nodes, setNodes] = useState([]);
@@ -130,25 +129,25 @@ function MainContent() {
     return styleEdges(edges, nodes);
   }, [edges, nodes]);
 
-  // Charger les données uniquement quand le projet change (pas quand nodes/edges sont mis à jour)
+  // Synchroniser avec le projet courant (setState dans useEffect est correct ici)
   useEffect(() => {
-    // Charger seulement si c'est un nouveau projet
-    if (currentProject?.id !== projectIdRef.current) {
-      projectIdRef.current = currentProject?.id;
-      
-      if (!currentProject) {
-        setNodes([]);
-        setEdges([]);
-        return;
-      }
-
-      const loadedNodes = (currentProject.nodes || []).map(node => ({
-        ...node,
-        type: node.type || 'familyTreeNode',
-      }));
-      setNodes(loadedNodes);
-      setEdges(currentProject.edges || []);
+    if (currentProject?.id === projectIdRef.current) return;
+    
+    projectIdRef.current = currentProject?.id;
+    
+    if (!currentProject) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setNodes([]);
+      setEdges([]);
+      return;
     }
+
+    const loadedNodes = (currentProject.nodes || []).map(node => ({
+      ...node,
+      type: node.type || 'familyTreeNode',
+    }));
+    setNodes(loadedNodes);
+    setEdges(currentProject.edges || []);
   }, [currentProject]);
 
   // Nettoyer le timeout au démontage

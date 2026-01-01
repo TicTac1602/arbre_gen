@@ -1,17 +1,6 @@
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
-
-// Fonction pour formater une date ISO en format français
-const formatDate = (dateString) => {
-  if (!dateString) return '';
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return dateString;
-    return date.toLocaleDateString('fr-FR');
-  } catch {
-    return dateString;
-  }
-};
+import { formatDate } from '../utils/dateFormatter';
 
 function FamilyTreeNode({ data}) {
   return (

@@ -1,4 +1,3 @@
-import './App.css'
 import ProjectSidebar from './components/ProjectSidebar'
 import MainContent from './components/MainContent'
 
