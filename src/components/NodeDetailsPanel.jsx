@@ -11,7 +11,6 @@ function NodeDetailsPanel({ selectedNode, onUpdate, onDelete, onClose }) {
     birthDate: selectedNode?.data.birthDate || '',
     deathDate: selectedNode?.data.deathDate || '',
     age: selectedNode?.data.age || '',
-    gender: selectedNode?.data.gender || '',
     profession: selectedNode?.data.profession || '',
     pleineProprietePart: selectedNode?.data.pleineProprietePart || '',
     usufruitPart: selectedNode?.data.usufruitPart || '',
@@ -30,7 +29,6 @@ function NodeDetailsPanel({ selectedNode, onUpdate, onDelete, onClose }) {
         birthDate: selectedNode.data.birthDate || '',
         deathDate: selectedNode.data.deathDate || '',
         age: selectedNode.data.age || '',
-        gender: selectedNode.data.gender || '',
         profession: selectedNode.data.profession || '',
         pleineProprietePart: selectedNode.data.pleineProprietePart || '',
         usufruitPart: selectedNode.data.usufruitPart || '',
@@ -89,7 +87,7 @@ function NodeDetailsPanel({ selectedNode, onUpdate, onDelete, onClose }) {
           <div className="space-y-4">
             {/* Avatar et nom */}
             <div className="text-center pb-4 border-b border-gray-200">
-              <PersonAvatar name={selectedNode.data.label} gender={selectedNode.data.gender} />
+              <PersonAvatar name={selectedNode.data.label} />
               <h3 className="text-xl font-bold text-gray-800">
                 {selectedNode.data.label || 'Sans nom'}
               </h3>

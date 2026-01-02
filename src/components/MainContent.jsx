@@ -15,6 +15,7 @@ import PersonForm from './PersonForm';
 import NodeDetailsPanel from './NodeDetailsPanel';
 import FamilyTreeMinimap from './FamilyTreeMinimap';
 import ExportButtons from './ExportButtons';
+import { calculateAge } from '../utils/date';
 
 // Fonction pour calculer les index de décès
 const calculateDeathIndices = (nodes) => {
@@ -52,6 +53,32 @@ const calculateDeathIndices = (nodes) => {
     return {
       ...node,
       data: dataWithoutIndex
+    };
+  });
+};
+
+// Fonction pour calculer les âges automatiquement
+const calculateAges = (nodes) => {
+  if (!nodes || nodes.length === 0) return nodes;
+  
+  return nodes.map(node => {
+    const age = calculateAge(node.data?.birthDate, node.data?.deathDate);
+    
+    if (age !== null) {
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          age
+        }
+      };
+    }
+    
+    // Retirer age si pas de date de naissance
+    const { age: _age, ...dataWithoutAge } = node.data || {};
+    return {
+      ...node,
+      data: dataWithoutAge
     };
   });
 };
@@ -119,9 +146,10 @@ function MainContent() {
   // Définir les types de nœuds personnalisés
   const nodeTypes = useMemo(() => ({ familyTreeNode: FamilyTreeNode }), []);
 
-  // Calculer les deathIndex dynamiquement
-  const nodesWithDeathIndices = useMemo(() => {
-    return calculateDeathIndices(nodes);
+  // Calculer les âges et deathIndex dynamiquement
+  const nodesWithComputedData = useMemo(() => {
+    const nodesWithAges = calculateAges(nodes);
+    return calculateDeathIndices(nodesWithAges);
   }, [nodes]);
 
   // Styliser les edges selon le type de relation
@@ -246,8 +274,6 @@ function MainContent() {
         lastName: formData.lastName,
         birthDate: formData.birthDate,
         deathDate: formData.deathDate,
-        age: formData.age,
-        gender: formData.gender,
         profession: formData.profession,
 		pleineProprietePart: formData.pleineProprietePart,
         usufruitPart: formData.usufruitPart,
@@ -285,7 +311,7 @@ function MainContent() {
         />
         <div className="flex-1 relative">
           <ReactFlow
-            nodes={nodesWithDeathIndices}
+            nodes={nodesWithComputedData}
             edges={styledEdges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}

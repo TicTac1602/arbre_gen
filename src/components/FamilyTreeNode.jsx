@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
-import { formatDate } from '../utils/dateFormatter';
+import { formatDate } from '../utils/date';
 
 function FamilyTreeNode({ data}) {
   return (
@@ -13,7 +13,7 @@ function FamilyTreeNode({ data}) {
       />
 
       {/* Carte de la personne */}
-      <div className={`border-2 rounded-lg shadow-lg min-w-[200px] hover:shadow-xl transition-shadow ${
+      <div className={`border-2 rounded-lg shadow-md min-w-[200px] hover:shadow-lg hover:border-blue-400 transition-all duration-200 ${
         data.notConcerned 
           ? 'bg-gray-200 border-gray-400 opacity-70' 
           : 'bg-white border-gray-300'

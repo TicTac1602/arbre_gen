@@ -24,33 +24,6 @@ function PersonEditForm({ formData, onChange }) {
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">Genre</label>
-        <select
-          name="gender"
-          value={formData.gender}
-          onChange={onChange}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">Non spécifié</option>
-          <option value="male">Homme</option>
-          <option value="female">Femme</option>
-          <option value="other">Autre</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">Âge</label>
-        <input
-          type="number"
-          name="age"
-          value={formData.age}
-          onChange={onChange}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          min="0"
-        />
-      </div>
-
-      <div>
         <label className="block text-xs font-medium text-gray-700 mb-1">Date de naissance</label>
         <input
           type="date"

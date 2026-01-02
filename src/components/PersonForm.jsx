@@ -6,8 +6,6 @@ function PersonForm({ isOpen, onClose, onSubmit }) {
     lastName: '',
     birthDate: '',
     deathDate: '',
-    age: '',
-    gender: '',
     profession: '',
     pleineProprietePart: '',
     usufruitPart: '',
@@ -88,42 +86,6 @@ function PersonForm({ isOpen, onClose, onSubmit }) {
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Dupont"
-                />
-              </div>
-
-              {/* Genre */}
-              <div>
-                <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
-                  Genre
-                </label>
-                <select
-                  id="gender"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Non spécifié</option>
-                  <option value="male">Homme</option>
-                  <option value="female">Femme</option>
-                  <option value="other">Autre</option>
-                </select>
-              </div>
-
-              {/* Âge */}
-              <div>
-                <label htmlFor="age" className="block text-sm font-medium text-gray-700 mb-1">
-                  Âge
-                </label>
-                <input
-                  type="number"
-                  id="age"
-                  name="age"
-                  value={formData.age}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="45"
-                  min="0"
                 />
               </div>
 

@@ -1,21 +1,15 @@
-import { formatDate } from '../../utils/dateFormatter';
+import { formatDate, calculateAge } from '../../utils/date';
 
 function PersonInfoDisplay({ formData }) {
+  // Calculer l'âge dynamiquement si les dates sont disponibles
+  const age = calculateAge(formData.birthDate, formData.deathDate);
+  
   return (
     <div className="space-y-3">
-      {formData.gender && (
-        <div>
-          <label className="text-xs font-medium text-gray-500 uppercase">Genre</label>
-          <p className="text-sm text-gray-800 mt-1">
-            {formData.gender === 'male' ? 'Homme' : formData.gender === 'female' ? 'Femme' : 'Autre'}
-          </p>
-        </div>
-      )}
-
-      {formData.age && (
+      {age !== null && (
         <div>
           <label className="text-xs font-medium text-gray-500 uppercase">Âge</label>
-          <p className="text-sm text-gray-800 mt-1">{formData.age} ans</p>
+          <p className="text-sm text-gray-800 mt-1">{age} ans</p>
         </div>
       )}
 
