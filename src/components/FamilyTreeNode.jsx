@@ -9,7 +9,7 @@ function FamilyTreeNode({ data}) {
       <Handle
         type="target"
         position={Position.Top}
-        className="w-3 h-3 bg-blue-500 border-2 border-white"
+        style={{ width: '12px', height: '12px', backgroundColor: 'rgb(59 130 246)', border: '2px solid white', borderRadius: '50%', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
       />
 
       {/* Carte de la personne */}
@@ -97,7 +97,7 @@ function FamilyTreeNode({ data}) {
       <Handle
         type="source"
         position={Position.Bottom}
-        className="w-3 h-3 bg-green-500 border-2 border-white"
+        style={{ width: '12px', height: '12px', backgroundColor: 'rgb(59 130 246)', border: '2px solid white', borderRadius: '50%', cursor: 'pointer' }}
       />
 
       {/* Handle à gauche pour les conjoints */}
@@ -105,7 +105,7 @@ function FamilyTreeNode({ data}) {
         type="source"
         position={Position.Left}
         id="spouse-left"
-        className="w-3 h-3 bg-pink-500 border-2 border-white"
+        style={{ width: '12px', height: '12px', backgroundColor: 'rgb(251 191 36)', border: '2px solid white', borderRadius: '50%', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
       />
 
       {/* Handle à droite pour les conjoints */}
@@ -113,7 +113,7 @@ function FamilyTreeNode({ data}) {
         type="target"
         position={Position.Right}
         id="spouse-right"
-        className="w-3 h-3 bg-pink-500 border-2 border-white"
+        style={{ width: '12px', height: '12px', backgroundColor: 'rgb(251 191 36)', border: '2px solid white', borderRadius: '50%', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
       />
     </div>
   );
