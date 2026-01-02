@@ -63,4 +63,14 @@ export const projectDB = {
     }
     await db.projects.update(id, updates);
   },
+
+  // Synchroniser un projet depuis Supabase vers IndexedDB
+  async syncFromSupabase(project) {
+    const existing = await db.projects.get(project.id);
+    if (existing) {
+      await db.projects.update(project.id, project);
+    } else {
+      await db.projects.add(project);
+    }
+  },
 };

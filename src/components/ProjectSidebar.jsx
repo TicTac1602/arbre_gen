@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useProjectStore } from '../store/projectStore';
+import { useAuth } from '../contexts/AuthContext';
 import ProjectForm from './ProjectSidebar/ProjectForm';
 import ProjectItem from './ProjectSidebar/ProjectItem';
 
@@ -11,6 +12,7 @@ function ProjectSidebar() {
   const [editingId, setEditingId] = useState(null);
   const [editingName, setEditingName] = useState('');
 
+  const { user, logout } = useAuth();
   const {
     projects,
     currentProjectId,
@@ -64,12 +66,12 @@ function ProjectSidebar() {
 
   return (
     <div
-      className={`bg-gray-800 text-white transition-all duration-300 ease-in-out relative h-screen ${
+      className={`bg-gray-800 text-white transition-all duration-300 ease-in-out relative h-screen flex flex-col ${
         isCollapsed ? 'w-[65px]' : 'w-[350px]'
       }`}
     >
       {/* Sidebar Content */}
-      <div className={`p-4 ${isCollapsed ? 'hidden' : 'block'}`}>
+      <div className={`p-4 flex-1 overflow-y-auto ${isCollapsed ? 'hidden' : 'block'}`}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Projets</h2>
           <div className="flex items-center gap-2">
@@ -142,6 +144,27 @@ function ProjectSidebar() {
           )}
         </div>
       </div>
+
+      {/* User Info & Logout - Expanded */}
+      {!isCollapsed && (
+        <div className="border-t border-gray-700 p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+            </div>
+            <button
+              onClick={logout}
+              className="ml-2 px-3 py-1.5 text-xs bg-gray-700 hover:bg-gray-600 rounded transition-colors flex items-center gap-1"
+              title="Se déconnecter"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>Déconnexion</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Collapsed State Icons */}
       {isCollapsed && (
