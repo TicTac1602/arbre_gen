@@ -5,6 +5,8 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
+  ReactFlowProvider,
+  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
@@ -134,8 +136,18 @@ const styleEdges = (edges, nodes) => {
   });
 };
 
+// Composant wrapper pour utiliser useReactFlow
+function MainContentWrapper() {
+  return (
+    <ReactFlowProvider>
+      <MainContent />
+    </ReactFlowProvider>
+  );
+}
+
 function MainContent() {
   const { currentProject, updateCurrentProject } = useProjectStore();
+  const { screenToFlowPosition } = useReactFlow();
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -261,12 +273,18 @@ function MainContent() {
     const newNodeId = `node-${Date.now()}`;
     const fullName = `${formData.firstName} ${formData.lastName}`.trim();
     
+    // Positionner au centre du viewport actuel
+    const viewportCenter = screenToFlowPosition({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    });
+    
     const newNode = {
       id: newNodeId,
       type: 'familyTreeNode',
       position: {
-        x: Math.random() * 400 + 200,
-        y: Math.random() * 400 + 200
+        x: viewportCenter.x,
+        y: viewportCenter.y
       },
       data: {
         label: fullName,
@@ -284,8 +302,7 @@ function MainContent() {
     };
 
     setNodes(nds => [...nds, newNode]);
-    // La sauvegarde se fait automatiquement via useEffect
-  }, []);
+  }, [screenToFlowPosition]);
 
   if (!currentProject) {
     return (
@@ -341,4 +358,4 @@ function MainContent() {
   );
 }
 
-export default MainContent;
+export default MainContentWrapper;

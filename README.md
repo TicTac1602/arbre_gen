@@ -42,4 +42,3 @@ npm run build
 
 ## TODOs
 
-- Placer les nouvelles nodes au centre de la vue

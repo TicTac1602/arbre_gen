@@ -67,7 +67,7 @@ function ProjectSidebar() {
   return (
     <div
       className={`bg-gray-800 text-white transition-all duration-300 ease-in-out relative h-screen flex flex-col ${
-        isCollapsed ? 'w-[65px]' : 'w-[350px]'
+        isCollapsed ? 'w-[65px]' : 'w-[250px] lg:w-[350px]'
       }`}
     >
       {/* Sidebar Content */}
