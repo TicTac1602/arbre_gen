@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { projectDB } from '../utils/db';
 import { 
   saveProjectToSupabase, 
   loadProjectsFromSupabase, 
@@ -21,33 +20,19 @@ export const useProjectStore = create((set, get) => ({
     set({ userId });
   },
 
-  // Charger tous les projets depuis Supabase et IndexedDB
+  // Charger tous les projets depuis Supabase
   loadProjects: async () => {
     set({ isLoading: true });
 
     try {
       const { userId } = get();
-      let projects = [];
-
-      // Charger depuis Supabase si connecté
-      if (userId) {
-        try {
-          const supabaseProjects = await loadProjectsFromSupabase(userId);
-          projects = supabaseProjects;
-          
-          // Synchroniser avec IndexedDB pour le cache offline
-          for (const project of supabaseProjects) {
-            await projectDB.syncFromSupabase(project);
-          }
-        } catch (error) {
-          console.warn('Erreur Supabase, utilisation du cache local:', error);
-          projects = await projectDB.getAllProjects();
-        }
-      } else {
-        // Mode offline : charger depuis IndexedDB
-        projects = await projectDB.getAllProjects();
+      
+      if (!userId) {
+        set({ projects: [], isLoading: false });
+        return;
       }
 
+      const projects = await loadProjectsFromSupabase(userId);
       set({ projects, isLoading: false });
       
       // Charger le dernier projet sélectionné depuis localStorage
@@ -68,25 +53,31 @@ export const useProjectStore = create((set, get) => ({
   createProject: async (name) => {
     try {
       const { userId } = get();
-      const newProject = await projectDB.createProject(name);
       
-      // Sauvegarder sur Supabase si connecté
-      if (userId) {
-        try {
-          await saveProjectToSupabase(userId, newProject);
-        } catch (error) {
-          console.warn('Erreur sync Supabase:', error);
-        }
+      if (!userId) {
+        throw new Error('Utilisateur non connecté');
       }
 
+      const newProject = {
+        name,
+        nodes: [],
+        edges: [],
+        viewport: { x: 0, y: 0, zoom: 1 },
+      };
+      
+      const createdProject = await saveProjectToSupabase(userId, newProject);
+      
+      // Ajouter le projet créé à la liste
       set((state) => ({
-        projects: [...state.projects, newProject],
+        projects: [createdProject, ...state.projects],
       }));
       
-      // Sélectionner automatiquement le nouveau projet
-      get().setCurrentProject(newProject.id);
+      // Sélectionner le nouveau projet
+      if (createdProject) {
+        get().setCurrentProject(createdProject.id);
+      }
       
-      return newProject;
+      return createdProject;
     } catch (error) {
       console.error('Erreur lors de la création du projet:', error);
       throw error;
@@ -96,14 +87,18 @@ export const useProjectStore = create((set, get) => ({
   // Définir le projet actif
   setCurrentProject: async (projectId) => {
     try {
-      const project = await projectDB.getProject(projectId);
-      set({
-        currentProjectId: projectId,
-        currentProject: project,
-      });
+      const { projects } = get();
+      const project = projects.find(p => p.id === projectId);
       
-      // Sauvegarder dans localStorage
-      localStorage.setItem(LAST_PROJECT_KEY, projectId.toString());
+      if (project) {
+        set({
+          currentProjectId: projectId,
+          currentProject: project,
+        });
+        
+        // Sauvegarder dans localStorage
+        localStorage.setItem(LAST_PROJECT_KEY, projectId.toString());
+      }
     } catch (error) {
       console.error('Erreur lors de la sélection du projet:', error);
     }
@@ -111,30 +106,25 @@ export const useProjectStore = create((set, get) => ({
 
   // Mettre à jour le projet actuel avec les données React Flow
   updateCurrentProject: async (nodes, edges, viewport) => {
-    const { currentProjectId, userId } = get();
-    if (!currentProjectId) return;
+    const { currentProjectId, currentProject, userId } = get();
+    if (!currentProjectId || !userId || !currentProject) return;
 
     try {
-      // Sauvegarder dans IndexedDB
-      await projectDB.saveFlowState(currentProjectId, nodes, edges, viewport);
+      const updatedProject = {
+        ...currentProject,
+        id: currentProjectId, // S'assurer que l'ID est présent
+        nodes,
+        edges,
+        viewport,
+        updated_at: new Date().toISOString(),
+      };
       
-      // Sauvegarder sur Supabase si connecté
-      if (userId) {
-        const updatedProject = await projectDB.getProject(currentProjectId);
-        try {
-          await saveProjectToSupabase(userId, updatedProject);
-        } catch (error) {
-          console.warn('Erreur sync Supabase:', error);
-        }
-      }
+      await saveProjectToSupabase(userId, updatedProject);
       
-      // Mettre à jour seulement la liste des projets pour la sidebar
-      const updatedProject = await projectDB.getProject(currentProjectId);
       set((state) => ({
         projects: state.projects.map((p) =>
           p.id === currentProjectId ? updatedProject : p
         ),
-        // Ne pas mettre à jour currentProject pour éviter le re-render
       }));
     } catch (error) {
       console.error('Erreur lors de la mise à jour du projet:', error);
@@ -144,19 +134,7 @@ export const useProjectStore = create((set, get) => ({
   // Supprimer un projet
   deleteProject: async (projectId) => {
     try {
-      const { userId } = get();
-      
-      // Supprimer de IndexedDB
-      await projectDB.deleteProject(projectId);
-      
-      // Supprimer de Supabase si connecté
-      if (userId) {
-        try {
-          await deleteProjectFromSupabase(projectId);
-        } catch (error) {
-          console.warn('Erreur suppression Supabase:', error);
-        }
-      }
+      await deleteProjectFromSupabase(projectId);
       
       set((state) => {
         const newProjects = state.projects.filter((p) => p.id !== projectId);
@@ -181,19 +159,20 @@ export const useProjectStore = create((set, get) => ({
   // Renommer un projet
   renameProject: async (projectId, newName) => {
     try {
-      const { userId } = get();
+      const { userId, projects, currentProject } = get();
       
-      await projectDB.updateProject(projectId, { name: newName });
-      const updatedProject = await projectDB.getProject(projectId);
+      if (!userId) return;
       
-      // Synchroniser avec Supabase si connecté
-      if (userId) {
-        try {
-          await saveProjectToSupabase(userId, updatedProject);
-        } catch (error) {
-          console.warn('Erreur sync Supabase:', error);
-        }
-      }
+      const project = projects.find(p => p.id === projectId);
+      if (!project) return;
+      
+      const updatedProject = {
+        ...project,
+        name: newName,
+        updated_at: new Date().toISOString(),
+      };
+      
+      await saveProjectToSupabase(userId, updatedProject);
       
       set((state) => ({
         projects: state.projects.map((p) =>

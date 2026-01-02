@@ -11,14 +11,14 @@ Application web interactive pour créer et gérer des arbres généalogiques ave
 - **Relations visuelles** : Liens de mariage (or/💍) et de filiation (bleu) clairement différenciés
 - **Export** : Génération d'images PNG et PDF haute qualité
 - **Minimap** : Navigation facilitée avec carte miniature cliquable
-- **Persistence** : Sauvegarde automatique dans IndexedDB
+- **Persistence** : Sauvegarde automatique des données
 
 ## Technologies
 
 - **React 19.2** avec Vite
 - **@xyflow/react** pour les diagrammes interactifs
 - **Zustand** pour la gestion d'état
-- **Dexie** pour IndexedDB
+- **Supabase** pour la persistance des données
 - **Tailwind CSS** pour le style
 - **html-to-image** & **jsPDF** pour l'export
 
@@ -42,5 +42,4 @@ npm run build
 
 ## TODOs
 
-- Calculer l'âge automatiquement en fonction des dates
 - Placer les nouvelles nodes au centre de la vue

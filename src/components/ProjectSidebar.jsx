@@ -123,7 +123,7 @@ function ProjectSidebar() {
               Aucun projet. Cliquez sur + pour en créer un.
             </p>
           ) : (
-            projects.map((project) => (
+            projects.filter(p => p && p.id).map((project) => (
               <div key={project.id} className="relative">
                 <ProjectItem
                   project={project}
